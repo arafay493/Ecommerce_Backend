@@ -23,11 +23,13 @@ const createUser = (req, res, next) => {
     default:
       break;
   }
-  // Email already exist validation
-  User.findOne({ email: req.body.email }).then((user) => {
+  // User already exist validation
+  User.findOne({
+    $or: [{ email: req.body.email }, { mobile: req.body.mobile }],
+  }).then((user) => {
     if (user) {
       return res.status(400).send({
-        message: "Email already exists.",
+        message: "User already exists with this email or mobile.",
         success: false,
       });
     } else {
@@ -39,11 +41,16 @@ const createUser = (req, res, next) => {
         mobile: req.body.mobile,
         password: req.body.password,
       });
+
       // Save the User in the database
       newUser
         .save()
         .then((data) => {
-          res.send(data);
+          res.send({
+            message: "User created successfully!",
+            success: true,
+            data,
+          });
         })
         .catch((err) => {
           res.status(500).send({
