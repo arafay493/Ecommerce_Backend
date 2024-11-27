@@ -97,22 +97,16 @@ const createUser = async (req, res, next) => {
       mobile: req.body.mobile,
       password: req.body.password,
     });
-
-    // res.status(201); // Created
-    // res.locals.message = "User created successfully!";
-    // res.locals.data = savedUser;
-    // console.log(res.locals);
-    // Save the User in the database
     const data = await newUser.save();
-    res.status(201).send({
-      message: "User created successfully!",
-      success: true,
-      data,
-    });
-    // res.status(201); // Created
-    // res.locals.message = "User created successfully!";
-    // res.locals.data = data;
-    // next(res); // Pass to responseHandler
+    // res.status(201).send({
+    //   message: "User created successfully!",
+    //   success: true,
+    //   data,
+    // });
+    res.status(201); // Created
+    res.locals.message = "User created successfully!";
+    res.locals.data = data;
+    next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
   }

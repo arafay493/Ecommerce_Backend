@@ -11,7 +11,7 @@ db();
 app.use(express.json());
 app.use(authRouter);
 
-// app.use(responseHandler);
+app.use(responseHandler);
 app.use(errorHandler);
 app.use(notFound);
 app.listen(port, () =>
