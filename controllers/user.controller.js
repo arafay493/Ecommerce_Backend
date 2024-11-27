@@ -67,12 +67,15 @@ const createUser = async (req, res, next) => {
   try {
     // Validate request
     if (!req.body.mobile) {
+      res.status(400); // Bad Request
       throw new Error("Mobile number must be provided.");
     }
     if (!req.body.email) {
+      res.status(400); // Bad Request
       throw new Error("Email must be provided.");
     }
     if (!req.body.password) {
+      res.status(400); // Bad Request
       throw new Error("Password must be provided.");
     }
 
@@ -82,6 +85,7 @@ const createUser = async (req, res, next) => {
     });
 
     if (user) {
+      res.status(409); // Conflict
       throw new Error("User already exists with this email or mobile.");
     }
 
@@ -94,15 +98,23 @@ const createUser = async (req, res, next) => {
       password: req.body.password,
     });
 
+    // res.status(201); // Created
+    // res.locals.message = "User created successfully!";
+    // res.locals.data = savedUser;
+    // console.log(res.locals);
     // Save the User in the database
     const data = await newUser.save();
-    res.send({
+    res.status(201).send({
       message: "User created successfully!",
       success: true,
       data,
     });
+    // res.status(201); // Created
+    // res.locals.message = "User created successfully!";
+    // res.locals.data = data;
+    // next(res); // Pass to responseHandler
   } catch (err) {
-    next(err); // Pass the error to the errorHandler middleware
+    next(err); // Pass error to the middleware
   }
 };
 
