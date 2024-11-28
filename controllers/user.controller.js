@@ -63,7 +63,7 @@ const User = require("../models/user.model");
 //   });
 // };
 
-const createUser = async (req, res, next) => {
+const createUserController = async (req, res, next) => {
   try {
     // Validate request
     if (!req.body.mobile) {
@@ -112,4 +112,32 @@ const createUser = async (req, res, next) => {
   }
 };
 
-module.exports = { createUser };
+const loginUserController = async (req, res, next) => {
+  res.send({email: req.body.email , password: req.body.password})
+  // try {
+  //   // Validate request
+  //   if (!req.body.email) {
+  //     res.status(400); // Bad Request
+  //     throw new Error("Email must be provided.");
+  //   }
+  //   if (!req.body.password) {
+  //     res.status(400); // Bad Request
+  //     throw new Error("Password must be provided.");
+  //   }
+  //   const user = await User.findOne({ email: req.body.email });
+  //   if (!user || !(await user.validatePassword(req.body.password))) {
+  //     res.status(401); // Unauthorized
+  //     throw new Error("Invalid email or password.");
+  //   }
+  //   // Generate and send JWT token
+  //   const token = await user.generateAuthToken();
+  //   res.status(200); // OK
+  //   res.locals.message = "User logged in successfully!";
+  //   res.locals.data = { token };
+  //   next(); // Pass to responseHandler
+  // } catch (error) {
+  //   next(error); // Pass error to the middleware
+  // }
+};
+
+module.exports = { createUserController , loginUserController };
