@@ -96,6 +96,8 @@ const createUserController = async (req, res, next) => {
       email: req.body.email,
       mobile: req.body.mobile,
       password: req.body.password,
+      isAdmin: req.body.isAdmin,
+      role: req.body.role,
     });
     const data = await newUser.save();
     // res.status(201).send({
@@ -136,7 +138,7 @@ const loginUserController = async (req, res, next) => {
     // delete userData.password;
     res.status(200); // OK
     res.locals.message = "User logged in successfully!";
-    res.locals.data = { token };
+    // res.locals.data = { token };
     res.locals.data = {
       token,
       user: userData,
