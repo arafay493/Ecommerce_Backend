@@ -63,6 +63,7 @@ const jwt = require("jsonwebtoken");
 //   });
 // };
 
+//? Register A User Controller
 const createUserController = async (req, res, next) => {
   try {
     // Validate request
@@ -114,6 +115,7 @@ const createUserController = async (req, res, next) => {
   }
 };
 
+//? Login A User Controller
 const loginUserController = async (req, res, next) => {
   try {
     // Validate request
@@ -150,4 +152,17 @@ const loginUserController = async (req, res, next) => {
   }
 };
 
-module.exports = { createUserController, loginUserController };
+//? Get All Users List
+const getAllUsersController = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    res.status(200); // OK
+    res.locals.message = "Users list fetched successfully!";
+    res.locals.data = users;
+    next(); // Pass to responseHandler
+  } catch (error) {
+    next(error); // Pass error to the middleware
+  }
+};
+
+module.exports = { createUserController, loginUserController, getAllUsersController };
