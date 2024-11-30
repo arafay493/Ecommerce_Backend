@@ -193,9 +193,34 @@ const getUserByIdController = async (req, res, next) => {
   }
 };
 
+//? Delete A User By ID
+const deleteUserController = async (req, res, next) => {
+  try {
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.body.userId)) {
+      res.status(400); // Bad Request
+      throw new Error("Invalid User ID.");
+    }
+    const result = await User.deleteOne({ _id: req.body.userId });
+    console.log(result)
+    if (result.deletedCount === 0) {
+      res.status(404); // Not Found
+      throw new Error("User not found.");
+    }
+    res.status(200); // OK
+    res.locals.message = "User Deleted successfully!";
+    res.locals.data = result;
+    next(); // Pass to responseHandler
+  } catch (err) {
+    next(err); // Pass error to the middleware
+    console.log(err)
+  }
+};
+
 module.exports = {
   createUserController,
   loginUserController,
   getAllUsersController,
   getUserByIdController,
+  deleteUserController
 };
