@@ -221,10 +221,41 @@ const deleteUserController = async (req, res, next) => {
   }
 };
 
+//? Delete A User By ID
+const deleteUserByParamsIdController = async (req, res, next) => {
+  try {
+    // const { userId } = req.params;
+    const { userId } = req.query;
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(400); // Bad Request
+      throw new Error("Invalid User ID.");
+    }
+    const user = await User.findOne({ _id: userId });
+    const result = await User.deleteOne({ _id: userId });
+    if (result.deletedCount === 0) {
+      res.status(404); // Not Found
+      throw new Error("User not found.");
+    }
+    const userData = user.toObject();
+    delete userData.password;
+    res.status(200); // OK
+    res.locals.message = "User Deleted successfully!";
+    res.locals.data = {
+      ...userData,
+      deletedCount: result.deletedCount,
+    };
+    next(); // Pass to responseHandler
+  } catch (err) {
+    next(err); // Pass error to the middleware
+  }
+};
+
 module.exports = {
   createUserController,
   loginUserController,
   getAllUsersController,
   getUserByIdController,
   deleteUserController,
+  deleteUserByParamsIdController,
 };
