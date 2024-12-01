@@ -311,6 +311,42 @@ const deleteUserByParamsIdController = async (req, res, next) => {
   }
 };
 
+//? Update A User By ID
+const updateUserController = async (req, res, next) => {
+  try {
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.body.userId)) {
+      res.status(400); // Bad Request
+      throw new Error("Invalid User ID.");
+    }
+    const currentUser = await User.findById(req.body.userId);
+    const updatedUser = await User.findByIdAndUpdate(
+      req.body.userId,
+      req.body,
+      { new: true }
+    );
+    if (!updatedUser) {
+      res.status(404); // Not Found
+      throw new Error("User not found.");
+    }
+    // Convert to plain objects and compare
+    if (
+      JSON.stringify(currentUser.toObject()) ===
+      JSON.stringify(updatedUser.toObject())
+    ) {
+      res.status(409); // Conflict
+      throw new Error("No changes made to the user.");
+    }
+    const {password , __v , ...resData} = updatedUser.toObject();
+    res.status(200); // OK
+    res.locals.message = "User updated successfully!";
+    res.locals.data = resData;
+    next(); // Pass to responseHandler
+  } catch (err) {
+    next(err); // Pass error to the middleware
+  }
+};
+
 module.exports = {
   createUserController,
   loginUserController,
@@ -319,4 +355,5 @@ module.exports = {
   deleteUserController,
   deleteUserByQueryParamsIdController,
   deleteUserByParamsIdController,
+  updateUserController,
 };

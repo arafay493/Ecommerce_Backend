@@ -6,6 +6,7 @@ const {
   deleteUserController,
   deleteUserByQueryParamsIdController,
   deleteUserByParamsIdController,
+  updateUserController
 } = require("../controllers/user.controller");
 
 const router = require("express").Router();
@@ -17,5 +18,6 @@ router.get("/singleUser", getUserByIdController);
 router.delete("/singleUser/delete", deleteUserController);
 router.delete("/delete", deleteUserByQueryParamsIdController);
 router.delete("/delete/:userId", deleteUserByParamsIdController);
+router.put("/singleUser/update", updateUserController);
 
 module.exports = router;
