@@ -337,7 +337,51 @@ const updateUserController = async (req, res, next) => {
       res.status(409); // Conflict
       throw new Error("No changes made to the user.");
     }
-    const {password , __v , ...resData} = updatedUser.toObject();
+    const { password, __v, ...resData } = updatedUser.toObject();
+    res.status(200); // OK
+    res.locals.message = "User updated successfully!";
+    res.locals.data = resData;
+    next(); // Pass to responseHandler
+  } catch (err) {
+    next(err); // Pass error to the middleware
+  }
+};
+
+const updateUserSpecificFieldController = async (req, res, next) => {
+  try {
+    const { userId } = req.body; // Extract the userId from the request body
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(400); // Bad Request
+      throw new Error("Invalid User ID.");
+    }
+
+    // Check if the user exists
+    const currentUser = await User.findById(userId);
+    if (!currentUser) {
+      res.status(404); // Not Found
+      throw new Error("User not found.");
+    }
+
+    // Perform the partial update
+    const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
+      new: true, // Return the updated document
+      runValidators: true, // Validate fields before updating
+    });
+
+    // Compare if there are no changes
+    if (
+      JSON.stringify(currentUser.toObject()) ===
+      JSON.stringify(updatedUser.toObject())
+    ) {
+      res.status(409); // Conflict
+      throw new Error("No changes made to the user.");
+    }
+
+    // Remove sensitive or unnecessary fields from the response
+    const { password, __v, ...resData } = updatedUser.toObject();
+
     res.status(200); // OK
     res.locals.message = "User updated successfully!";
     res.locals.data = resData;
@@ -356,4 +400,5 @@ module.exports = {
   deleteUserByQueryParamsIdController,
   deleteUserByParamsIdController,
   updateUserController,
+  updateUserSpecificFieldController,
 };
