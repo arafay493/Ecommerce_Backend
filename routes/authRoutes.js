@@ -4,6 +4,7 @@ const {
   getAllUsersController,
   getUserByIdController,
   deleteUserController,
+  deleteUserByQueryParamsIdController,
   deleteUserByParamsIdController,
 } = require("../controllers/user.controller");
 
@@ -14,7 +15,7 @@ router.post("/login", loginUserController);
 router.get("/users", getAllUsersController);
 router.get("/singleUser", getUserByIdController);
 router.delete("/singleUser/delete", deleteUserController);
-// router.delete("/delete/:userId", deleteUserByParamsIdController);
-router.delete("/delete", deleteUserByParamsIdController);
+router.delete("/delete", deleteUserByQueryParamsIdController);
+router.delete("/delete/:userId", deleteUserByParamsIdController);
 
 module.exports = router;

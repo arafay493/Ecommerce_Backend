@@ -222,9 +222,8 @@ const deleteUserController = async (req, res, next) => {
 };
 
 //? Delete A User By ID
-const deleteUserByParamsIdController = async (req, res, next) => {
+const deleteUserByQueryParamsIdController = async (req, res, next) => {
   try {
-    // const { userId } = req.params;
     const { userId } = req.query;
     // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -251,11 +250,73 @@ const deleteUserByParamsIdController = async (req, res, next) => {
   }
 };
 
+//? Delete A User By ID
+const deleteUserByParamsIdController = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(400); // Bad Request
+      throw new Error("Invalid User ID.");
+    }
+    //todo: Method 1
+    // const user = await User.findByIdAndDelete(userId).select(
+    //   "-password"
+    // );
+    //todo: Method 2
+    // Find and delete the user in one step
+    // const user = await User.findOneAndDelete({ _id: userId }).select(
+    //   "-password -__v"
+    // );
+    //todo: Method 3
+    // Use Mongoose's deleteOne method with query object
+    // const user = await User.deleteOne({ _id: userId });
+    //todo: Method 4
+    // Use Mongoose's deleteOne method with query object and projection
+    // const user = await User.deleteOne({ _id: userId }, { password: 0 }); // Exclude
+    //todo: Method 5
+    // Use Mongoose's findByIdAndDelete method with projection
+    // const user = await User.findByIdAndDelete(userId, { password: 0 }); // Exclude
+    //todo: Method 6
+    // Use Mongoose's findOneAndDelete method with projection
+    // const user = await User.findOneAndDelete({ _id: userId }, { password: 0 }); // Exclude
+    //todo: Method 7
+    // Use Mongoose's findByIdAndDelete method with projection and select
+    // const user = await User.findOneAndDelete({ _id: userId }).select({
+    //   password: 0, // Exclude
+    //   __v: 0,   // Exclude
+    // });
+    //todo: Method 8
+    // Use Mongoose's findOneAndDelete method with projection and select
+    const fieldsToExclude = ["password", "__v"];
+    const projection = fieldsToExclude.map((field) => `-${field}`).join(" ");
+
+    const user = await User.findOneAndDelete({ _id: userId }).select(
+      projection
+    );
+
+    if (!user) {
+      res.status(404); // Not Found
+      throw new Error("User not found.");
+    }
+    res.status(200); // OK
+    res.locals.message = "User Deleted successfully!";
+    res.locals.data = {
+      ...user.toObject(),
+      deletedCount: 1,
+    };
+    next(); // Pass to responseHandler
+  } catch (err) {
+    next(err); // Pass error to the middleware
+  }
+};
+
 module.exports = {
   createUserController,
   loginUserController,
   getAllUsersController,
   getUserByIdController,
   deleteUserController,
+  deleteUserByQueryParamsIdController,
   deleteUserByParamsIdController,
 };
