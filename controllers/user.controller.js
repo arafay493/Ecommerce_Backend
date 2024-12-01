@@ -171,14 +171,14 @@ const getUserByIdController = async (req, res, next) => {
   try {
     // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(req.body.userId)) {
-      console.log("Invalid User ID!"); 
+      console.log("Invalid User ID!");
       res.status(400); // Bad Request
       throw new Error("Invalid User ID.");
     }
     // const user = await User.findById(req.params.userId);
     // const user = await User.findById(req.body.userId);
     const user = await User.findOne({ _id: req.body.userId });
-    console.log(mongoose.Types.ObjectId.isValid(req.body.userId))
+    console.log(mongoose.Types.ObjectId.isValid(req.body.userId));
     if (!user) {
       res.status(404); // Not Found
       throw new Error("User not found.");
@@ -189,7 +189,7 @@ const getUserByIdController = async (req, res, next) => {
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
-    console.log(err)
+    console.log(err);
   }
 };
 
@@ -201,19 +201,23 @@ const deleteUserController = async (req, res, next) => {
       res.status(400); // Bad Request
       throw new Error("Invalid User ID.");
     }
+    const user = await User.findOne({ _id: req.body.userId });
+    const userData = user.toObject();
+    delete userData.password;
     const result = await User.deleteOne({ _id: req.body.userId });
-    console.log(result)
     if (result.deletedCount === 0) {
       res.status(404); // Not Found
       throw new Error("User not found.");
     }
     res.status(200); // OK
     res.locals.message = "User Deleted successfully!";
-    res.locals.data = result;
+    res.locals.data = {
+      ...userData,
+      deletedCount: result.deletedCount,
+    };
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
-    console.log(err)
   }
 };
 
@@ -222,5 +226,5 @@ module.exports = {
   loginUserController,
   getAllUsersController,
   getUserByIdController,
-  deleteUserController
+  deleteUserController,
 };
