@@ -178,7 +178,7 @@ const getUserByIdController = async (req, res, next) => {
     // const user = await User.findById(req.params.userId);
     // const user = await User.findById(req.body.userId);
     const user = await User.findOne({ _id: req.body.userId });
-    console.log(mongoose.Types.ObjectId.isValid(req.body.userId));
+    // console.log(mongoose.Types.ObjectId.isValid(req.body.userId));
     if (!user) {
       res.status(404); // Not Found
       throw new Error("User not found.");

@@ -9,13 +9,14 @@ const {
   updateUserController,
   updateUserSpecificFieldController
 } = require("../controllers/user.controller");
+const { authMiddleware } = require("../middlewares/authMiddleware");
 
 const router = require("express").Router();
 
 router.post("/register", createUserController);
 router.post("/login", loginUserController);
 router.get("/users", getAllUsersController);
-router.get("/singleUser", getUserByIdController);
+router.get("/singleUser", authMiddleware, getUserByIdController);
 router.delete("/singleUser/delete", deleteUserController);
 router.delete("/delete", deleteUserByQueryParamsIdController);
 router.delete("/delete/:userId", deleteUserByParamsIdController);

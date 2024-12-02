@@ -50,11 +50,11 @@ var userSchema = new mongoose.Schema({
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "Address",
     // },
-    type: ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Address",
   },
   wishList: {
-    type: ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Product",
     // items: {
     //   type: mongoose.Schema.Types.ObjectId,
