@@ -170,14 +170,14 @@ const getAllUsersController = async (req, res, next) => {
 const getUserByIdController = async (req, res, next) => {
   try {
     // Validate ObjectId
-    if (!mongoose.Types.ObjectId.isValid(req.body.userId)) {
+    if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
       console.log("Invalid User ID!");
       res.status(400); // Bad Request
       throw new Error("Invalid User ID.");
     }
     // const user = await User.findById(req.params.userId);
     // const user = await User.findById(req.body.userId);
-    const user = await User.findOne({ _id: req.body.userId });
+    const user = await User.findOne({ _id: req.user._id }, { password: 0 });
     // console.log(mongoose.Types.ObjectId.isValid(req.body.userId));
     if (!user) {
       res.status(404); // Not Found

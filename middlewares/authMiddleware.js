@@ -1,25 +1,25 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 const authMiddleware = async (req, res, next) => {
-  // Add your authentication logic here
-  // Example:
-//   const token = req.headers["authorization"]?.split(" ")[1];
-  const token = req.headers.authorization?.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//   try {
-//     req.user = decoded;
-//     next();
-//   } catch (error) {
-//     res.status(401).message({ message: 'Invalid token' });
-//   }
-  // req.user = decoded;
-  // For example, validate JWT token
-  // If token is expired, send a 403 Forbidden response
-  // If token is not provided, send a 401 Unauthorized response
-  // If token is valid, continue to the next middleware
-  // If token is invalid, send a 401 Unauthorized response
-  console.log("Authentication Middleware Running..............." , decoded);
-//   next();
+  try {
+    //   const token = req.headers["authorization"]?.split(" ")[1];
+    const token = req.headers.authorization?.split(" ")[1];
+    // If token is not provided, send a 401 Unauthorized response
+    if (!token) {
+      res.status(401); // Unauthorized
+      throw new Error("Access denied. No token provided.");
+    }
+
+    // If token is valid, decode it and attach the decoded payload to req.user
+    // If token is expired, send a 403 Forbidden response
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // console.log("Authentication Middleware Running...............", decoded);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(403).send({ message: "Token Expired" });
+    // next(error);
+  }
 };
 
 module.exports = { authMiddleware };
