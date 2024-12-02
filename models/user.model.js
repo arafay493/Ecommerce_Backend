@@ -34,7 +34,36 @@ var userSchema = new mongoose.Schema({
     type: String,
     enum: ["user", "admin"],
     default: "user",
+  },
+  cart: {
+    type: Array,
+    default: [],
+    // items: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Product",
+    // },
+  },
+  addresses: {
+    // type: Array,
+    // default: [],
+    // items: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Address",
+    // },
+    type: ObjectId,
+    ref: "Address",
+  },
+  wishList: {
+    type: ObjectId,
+    ref: "Product",
+    // items: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Product",
+    // },
   }
+}, {
+  timestamps: true,
+  // strict: true,
 });
 
 userSchema.pre("save", async function (next) {
