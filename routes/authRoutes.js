@@ -21,9 +21,11 @@ router.get("/adminUser", authMiddleware, isAdmin, getUserByIdController);
 router.delete("/singleUser/delete", deleteUserController);
 router.delete("/delete", deleteUserByQueryParamsIdController);
 router.delete("/delete/:userId", deleteUserByParamsIdController);
-router.put("/singleUser/update", updateUserController);
+router.put("/singleUser/update", authMiddleware, updateUserController);
 router.patch(
   "/singleUser/update/specific-field",
+  authMiddleware,
+  // isAdmin,
   updateUserSpecificFieldController
 );
 

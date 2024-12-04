@@ -315,16 +315,16 @@ const deleteUserByParamsIdController = async (req, res, next) => {
 const updateUserController = async (req, res, next) => {
   try {
     // Validate ObjectId
-    if (!mongoose.Types.ObjectId.isValid(req.body.userId)) {
+    if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
       res.status(400); // Bad Request
       throw new Error("Invalid User ID.");
     }
-    const currentUser = await User.findById(req.body.userId);
+    const currentUser = await User.findById(req.user._id, { updatedAt: 0 });
     const updatedUser = await User.findByIdAndUpdate(
-      req.body.userId,
+      req.user._id,
       req.body,
       { new: true }
-    );
+    ).select("-updatedAt");
     if (!updatedUser) {
       res.status(404); // Not Found
       throw new Error("User not found.");
