@@ -444,6 +444,54 @@ const blockUserByParamsIdController = async (req, res, next) => {
   }
 };
 
+//? Unblock A User By ID
+const unblockUserByParamsIdController = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(400); // Bad Request
+      throw new Error("Invalid User ID.");
+    }
+
+    // Check if the user exists
+    const currentUser = await User.findById(userId, {
+      updatedAt: 0,
+      createdAt: 0,
+    });
+    if (!currentUser) {
+      res.status(404); // Not Found
+      throw new Error("User not found.");
+    }
+
+    // Perform the partial update
+    const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
+      new: true, // Return the updated document
+      runValidators: true, // Validate fields before updating
+      projection: { updatedAt: 0, createdAt: 0 }, // Exclude fields
+    });
+
+    // Compare updated fields explicitly
+    const changesMade = Object.keys(req.body).some(
+      (key) => currentUser[key] !== req.body[key]
+    );
+    if (!changesMade) {
+      res.status(409); // Conflict
+      throw new Error("This user has already been unblocked.");
+    }
+
+    // Remove sensitive or unnecessary fields from the response
+    const { password, __v, ...resData } = updatedUser.toObject();
+
+    res.status(200); // OK
+    res.locals.message = "User has been successfully blocked!";
+    res.locals.data = resData;
+    next(); // Pass to responseHandler
+  } catch (err) {
+    next(err); // Pass error to the middleware
+  }
+};
+
 module.exports = {
   createUserController,
   loginUserController,
@@ -455,4 +503,5 @@ module.exports = {
   updateUserController,
   updateUserSpecificFieldController,
   blockUserByParamsIdController,
+  unblockUserByParamsIdController
 };
