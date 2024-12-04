@@ -319,12 +319,13 @@ const updateUserController = async (req, res, next) => {
       res.status(400); // Bad Request
       throw new Error("Invalid User ID.");
     }
-    const currentUser = await User.findById(req.user._id, { updatedAt: 0, createdAt: 0 });
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user._id,
-      req.body,
-      { new: true }
-    ).select("-updatedAt -createdAt");
+    const currentUser = await User.findById(req.user._id, {
+      updatedAt: 0,
+      createdAt: 0,
+    });
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, req.body, {
+      new: true,
+    }).select("-updatedAt -createdAt");
     if (!updatedUser) {
       res.status(404); // Not Found
       throw new Error("User not found.");
@@ -349,7 +350,8 @@ const updateUserController = async (req, res, next) => {
 
 const updateUserSpecificFieldController = async (req, res, next) => {
   try {
-    const { userId } = req.body; // Extract the userId from the request body
+    // const { userId } = req.body; // Extract the userId from the request body
+    const userId = req.user._id; // Extract the userId from the request body
 
     // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -358,7 +360,10 @@ const updateUserSpecificFieldController = async (req, res, next) => {
     }
 
     // Check if the user exists
-    const currentUser = await User.findById(userId);
+    const currentUser = await User.findById(userId, {
+      updatedAt: 0,
+      createdAt: 0,
+    });
     if (!currentUser) {
       res.status(404); // Not Found
       throw new Error("User not found.");
@@ -368,7 +373,7 @@ const updateUserSpecificFieldController = async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
       new: true, // Return the updated document
       runValidators: true, // Validate fields before updating
-    });
+    }).select("-updatedAt -createdAt");
 
     // Compare if there are no changes
     if (
