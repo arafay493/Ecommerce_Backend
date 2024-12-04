@@ -29,4 +29,9 @@ router.patch(
   updateUserSpecificFieldController
 );
 
+// Fallback for unmatched routes in this router
+router.use((req, res, next) => {
+  next(); // Pass to the next middleware (e.g., `notFound`)
+});
+
 module.exports = router;

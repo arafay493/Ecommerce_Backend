@@ -12,8 +12,8 @@ app.use(express.json());
 app.use(authRouter);
 
 app.use(responseHandler);
-app.use(errorHandler);
 app.use(notFound);
+app.use(errorHandler);
 app.listen(port, () =>
   console.log("> Server is up and running on port : " + port)
 );

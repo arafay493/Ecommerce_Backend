@@ -1,8 +1,9 @@
 //not found
 
 const notFound = (req, res, next) => {
-  const error = new Error(`Not Found: ${req.originalUrl()}`);
-  res.status(404);
+  console.log(res.status)
+  const error = new Error(`Endpoint Does Not Found: ${req.originalUrl}`);
+  res.statusCode(404);
   next(error);
 };
 
