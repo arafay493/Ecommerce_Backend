@@ -8,6 +8,7 @@ const {
   deleteUserByParamsIdController,
   updateUserController,
   updateUserSpecificFieldController,
+  blockUserByParamsIdController,
 } = require("../controllers/user.controller");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 
@@ -25,8 +26,13 @@ router.put("/singleUser/update", authMiddleware, updateUserController);
 router.patch(
   "/singleUser/update/specific-field",
   authMiddleware,
-  // isAdmin,
   updateUserSpecificFieldController
+);
+router.post(
+  "/block-user/:userId",
+  authMiddleware,
+  isAdmin,
+  blockUserByParamsIdController
 );
 
 // Fallback for unmatched routes in this router
