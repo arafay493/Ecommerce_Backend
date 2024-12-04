@@ -2,7 +2,9 @@ const jwt = require("jsonwebtoken");
 
 const authMiddleware = async (req, res, next) => {
   try {
+    //? Way 1
     //   const token = req.headers["authorization"]?.split(" ")[1];
+    //? Way 2
     const token = req.headers.authorization?.split(" ")[1];
     // If token is not provided, send a 401 Unauthorized response
     if (!token) {
@@ -10,15 +12,28 @@ const authMiddleware = async (req, res, next) => {
       throw new Error("Access denied. No token provided.");
     }
 
-    // If token is valid, decode it and attach the decoded payload to req.user
-    // If token is expired, send a 403 Forbidden response
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // console.log("Authentication Middleware Running...............", decoded);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET , function(err, decoded) {
+      if (err) {
+        if (err.name === "TokenExpiredError") {
+          const error = new Error("Token has expired. Please login again.");
+          res.statusCode = 403; // Forbidden
+          throw error;
+        } else if (err.name === "JsonWebTokenError") {
+          const error = new Error("Invalid token. Access denied.");
+          res.statusCode = 403; // Forbidden
+          throw error;
+        } else {
+          const error = new Error("An unexpected error occurred during token verification.");
+          res.statusCode = 500; // Internal Server Error
+          throw error;
+        }
+      }
+      return decoded;
+    });
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(403).send({ message: "Token Expired" });
-    // next(error);
+    next(error);
   }
 };
 
