@@ -319,12 +319,12 @@ const updateUserController = async (req, res, next) => {
       res.status(400); // Bad Request
       throw new Error("Invalid User ID.");
     }
-    const currentUser = await User.findById(req.user._id, { updatedAt: 0 });
+    const currentUser = await User.findById(req.user._id, { updatedAt: 0, createdAt: 0 });
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       req.body,
       { new: true }
-    ).select("-updatedAt");
+    ).select("-updatedAt -createdAt");
     if (!updatedUser) {
       res.status(404); // Not Found
       throw new Error("User not found.");
