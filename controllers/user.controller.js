@@ -136,6 +136,14 @@ const loginUserController = async (req, res, next) => {
     }
     //* Generate and send JWT token
     const token = await user.generateAuthToken();
+    //* Generate and send JWT Referesh token
+    const refreshToken = await user.generateRefreshAuthToken();
+    //* Set refresh token in the cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 3 * 60 * 60 * 1000,
+      // expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    }); // 7 days
     //* Convert Mongoose document to a plain object
     const { password, ...userData } = user.toObject();
     // const userData = user.toObject();
@@ -145,6 +153,7 @@ const loginUserController = async (req, res, next) => {
     // res.locals.data = { token };
     res.locals.data = {
       token,
+      refreshToken,
       user: userData,
       // user,
     };
@@ -171,7 +180,7 @@ const getAllUsersController = async (req, res, next) => {
 const getUserByIdController = async (req, res, next) => {
   try {
     // Validate ObjectId
-    validateMongoDbId(req.user._id , res)
+    validateMongoDbId(req.user._id, res);
     // const user = await User.findById(req.params.userId);
     // const user = await User.findById(req.body.userId);
     const user = await User.findOne({ _id: req.user._id }, { password: 0 });
@@ -194,7 +203,7 @@ const getUserByIdController = async (req, res, next) => {
 const deleteUserController = async (req, res, next) => {
   try {
     // Validate ObjectId
-    validateMongoDbId(req.body.userId , res)
+    validateMongoDbId(req.body.userId, res);
     const user = await User.findOne({ _id: req.body.userId });
     const userData = user.toObject();
     delete userData.password;
@@ -220,7 +229,7 @@ const deleteUserByQueryParamsIdController = async (req, res, next) => {
   try {
     const { userId } = req.query;
     // Validate ObjectId
-    validateMongoDbId(userId , res)
+    validateMongoDbId(userId, res);
     const user = await User.findOne({ _id: userId });
     const result = await User.deleteOne({ _id: userId });
     if (result.deletedCount === 0) {
@@ -246,7 +255,7 @@ const deleteUserByParamsIdController = async (req, res, next) => {
   try {
     const { userId } = req.params;
     // Validate ObjectId
-    validateMongoDbId(userId , res)
+    validateMongoDbId(userId, res);
     //todo: Method 1
     // const user = await User.findByIdAndDelete(userId).select(
     //   "-password"
@@ -303,7 +312,7 @@ const deleteUserByParamsIdController = async (req, res, next) => {
 const updateUserController = async (req, res, next) => {
   try {
     // Validate ObjectId
-    validateMongoDbId(req.user._id , res)
+    validateMongoDbId(req.user._id, res);
     const currentUser = await User.findById(req.user._id, {
       updatedAt: 0,
       createdAt: 0,
@@ -339,7 +348,7 @@ const updateUserSpecificFieldController = async (req, res, next) => {
     const userId = req.user._id; // Extract the userId from the request body
 
     // Validate ObjectId
-    validateMongoDbId(userId , res)
+    validateMongoDbId(userId, res);
 
     // Check if the user exists
     const currentUser = await User.findById(userId, {
@@ -383,7 +392,7 @@ const blockUserByParamsIdController = async (req, res, next) => {
   try {
     const { userId } = req.params;
     // Validate ObjectId
-    validateMongoDbId(userId , res)
+    validateMongoDbId(userId, res);
 
     // Check if the user exists
     const currentUser = await User.findById(userId, {
@@ -428,7 +437,7 @@ const unblockUserByParamsIdController = async (req, res, next) => {
   try {
     const { userId } = req.params;
     // Validate ObjectId
-    validateMongoDbId(userId , res)
+    validateMongoDbId(userId, res);
 
     // Check if the user exists
     const currentUser = await User.findById(userId, {
@@ -479,5 +488,5 @@ module.exports = {
   updateUserController,
   updateUserSpecificFieldController,
   blockUserByParamsIdController,
-  unblockUserByParamsIdController
+  unblockUserByParamsIdController,
 };

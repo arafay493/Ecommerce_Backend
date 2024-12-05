@@ -66,6 +66,10 @@ var userSchema = new mongoose.Schema(
       //   ref: "Product",
       // },
     },
+    refreshToken: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,
@@ -95,7 +99,15 @@ userSchema.methods.generateAuthToken = async function () {
   //   expiresIn: "1h",
   // });
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: "1min",
+    // expiresIn: "1min",
+    expiresIn: "1h",
+  });
+  return token;
+};
+
+userSchema.methods.generateRefreshAuthToken = async function () {
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: "3h",
   });
   return token;
 };
