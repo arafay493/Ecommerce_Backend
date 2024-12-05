@@ -192,7 +192,6 @@ const refreshTokenController = async (req, res, next) => {
       { refreshToken: newRefreshToken },
       { new: true }
     );
-    console.log(updateUser);
     //* Set refresh token in the cookie
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
