@@ -138,6 +138,11 @@ const loginUserController = async (req, res, next) => {
     const token = await user.generateAuthToken();
     //* Generate and send JWT Referesh token
     const refreshToken = await user.generateRefreshAuthToken();
+    const updateUser = await User.findByIdAndUpdate(
+      user.id,
+      { refreshToken },
+      { new: true }
+    );
     //* Set refresh token in the cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -167,11 +172,39 @@ const loginUserController = async (req, res, next) => {
 const refreshTokenController = async (req, res, next) => {
   try {
     const cookie = req.cookies;
-    console.log(cookie);
     if (!cookie || !cookie.refreshToken) {
       res.status(401); // Unauthorized
       throw new Error("Refresh token is required.");
     }
+    const refreshToken = cookie.refreshToken;
+    const user = await User.findOne({ refreshToken: refreshToken });
+    if (!user) {
+      res.status(401); // Unauthorized
+      throw new Error("Invalid refresh token.");
+    }
+    const userData = user.toObject();
+    //* Generate new JWT token
+    const token = await user.generateAuthToken();
+    //* Generate and send JWT Referesh token
+    const newRefreshToken = await user.generateRefreshAuthToken();
+    const updateUser = await User.findByIdAndUpdate(
+      user.id,
+      { newRefreshToken },
+      { new: true }
+    );
+    //* Set refresh token in the cookie
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      maxAge: 3 * 60 * 60 * 1000,
+      // expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    }); // 7 days
+    //* Convert Mongoose document to a plain object
+    const { password, ...newUserData } = user.toObject();
+    // // const userData = user.toObject();
+    // // delete userData.password;
+    res.status(200); // OK
+    res.locals.message = "Refresh token generated successfully!";
+    res.locals.data = { token, refreshToken: newRefreshToken, user: newUserData };
     next();
   } catch (error) {
     next(error); // Pass error to the middleware
