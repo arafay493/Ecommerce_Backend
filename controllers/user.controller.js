@@ -150,7 +150,7 @@ const loginUserController = async (req, res, next) => {
       // expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     }); // 7 days
     //* Convert Mongoose document to a plain object
-    const { password, ...userData } = user.toObject();
+    const { password, ...userData } = updateUser.toObject();
     // const userData = user.toObject();
     // delete userData.password;
     res.status(200); // OK
@@ -189,9 +189,10 @@ const refreshTokenController = async (req, res, next) => {
     const newRefreshToken = await user.generateRefreshAuthToken();
     const updateUser = await User.findByIdAndUpdate(
       user.id,
-      { newRefreshToken },
+      { refreshToken: newRefreshToken },
       { new: true }
     );
+    console.log(updateUser);
     //* Set refresh token in the cookie
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
@@ -199,12 +200,16 @@ const refreshTokenController = async (req, res, next) => {
       // expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     }); // 7 days
     //* Convert Mongoose document to a plain object
-    const { password, ...newUserData } = user.toObject();
+    const { password, ...newUserData } = updateUser.toObject();
     // // const userData = user.toObject();
     // // delete userData.password;
     res.status(200); // OK
     res.locals.message = "Refresh token generated successfully!";
-    res.locals.data = { token, refreshToken: newRefreshToken, user: newUserData };
+    res.locals.data = {
+      token,
+      refreshToken: newRefreshToken,
+      user: newUserData,
+    };
     next();
   } catch (error) {
     next(error); // Pass error to the middleware
