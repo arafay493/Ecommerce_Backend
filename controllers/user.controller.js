@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const { validateMongoDbId } = require("../utils/validateMongodbId");
 // Create and Save a new User
 // const createUser = (req, res, next) => {
 //   // Validate request
@@ -449,10 +450,7 @@ const unblockUserByParamsIdController = async (req, res, next) => {
   try {
     const { userId } = req.params;
     // Validate ObjectId
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      res.status(400); // Bad Request
-      throw new Error("Invalid User ID.");
-    }
+    validateMongoDbId(userId , res)
 
     // Check if the user exists
     const currentUser = await User.findById(userId, {
@@ -484,7 +482,7 @@ const unblockUserByParamsIdController = async (req, res, next) => {
     const { password, __v, ...resData } = updatedUser.toObject();
 
     res.status(200); // OK
-    res.locals.message = "User has been successfully blocked!";
+    res.locals.message = "User has been successfully unblocked!";
     res.locals.data = resData;
     next(); // Pass to responseHandler
   } catch (err) {
