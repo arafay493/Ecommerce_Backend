@@ -10,6 +10,7 @@ const {
   updateUserSpecificFieldController,
   blockUserByParamsIdController,
   unblockUserByParamsIdController,
+  refreshTokenController,
 } = require("../controllers/user.controller");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 
@@ -17,6 +18,7 @@ const router = require("express").Router();
 
 router.post("/register", createUserController);
 router.post("/login", loginUserController);
+router.get("/refresh", refreshTokenController);
 router.get("/users", getAllUsersController);
 router.get("/singleUser", authMiddleware, getUserByIdController);
 router.get("/adminUser", authMiddleware, isAdmin, getUserByIdController);

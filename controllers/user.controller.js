@@ -163,6 +163,21 @@ const loginUserController = async (req, res, next) => {
   }
 };
 
+//? Handle Refresh Token
+const refreshTokenController = async (req, res, next) => {
+  try {
+    const cookie = req.cookies;
+    console.log(cookie);
+    if (!cookie || !cookie.refreshToken) {
+      res.status(401); // Unauthorized
+      throw new Error("Refresh token is required.");
+    }
+    next();
+  } catch (error) {
+    next(error); // Pass error to the middleware
+  }
+};
+
 //? Get All Users List
 const getAllUsersController = async (req, res, next) => {
   try {
@@ -480,6 +495,7 @@ const unblockUserByParamsIdController = async (req, res, next) => {
 module.exports = {
   createUserController,
   loginUserController,
+  refreshTokenController,
   getAllUsersController,
   getUserByIdController,
   deleteUserController,

@@ -9,9 +9,10 @@ require("dotenv").config();
 const port = process.env.PORT || 8000;
 
 db();
-app.use(express.json());
-app.use(authRouter);
 app.use(cookieParser())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(authRouter);
 
 app.use(responseHandler);
 app.use(notFound);
