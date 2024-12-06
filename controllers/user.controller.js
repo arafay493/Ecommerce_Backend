@@ -111,6 +111,7 @@ const createUserController = async (req, res, next) => {
     res.status(201); // Created
     res.locals.message = "User created successfully!";
     res.locals.data = data;
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
@@ -162,6 +163,7 @@ const loginUserController = async (req, res, next) => {
       user: userData,
       // user,
     };
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (error) {
     next(error); // Pass error to the middleware
@@ -209,6 +211,7 @@ const refreshTokenController = async (req, res, next) => {
       refreshToken: newRefreshToken,
       user: newUserData,
     };
+    res.locals.headersSend = true;
     next();
   } catch (error) {
     next(error); // Pass error to the middleware
@@ -222,6 +225,7 @@ const getAllUsersController = async (req, res, next) => {
     res.status(200); // OK
     res.locals.message = "Users list fetched successfully!";
     res.locals.data = users;
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (error) {
     next(error); // Pass error to the middleware
@@ -244,6 +248,7 @@ const getUserByIdController = async (req, res, next) => {
     res.status(200); // OK
     res.locals.message = "User fetched successfully!";
     res.locals.data = user;
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
@@ -270,6 +275,7 @@ const deleteUserController = async (req, res, next) => {
       ...userData,
       deletedCount: result.deletedCount,
     };
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
@@ -296,6 +302,7 @@ const deleteUserByQueryParamsIdController = async (req, res, next) => {
       ...userData,
       deletedCount: result.deletedCount,
     };
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
@@ -354,6 +361,7 @@ const deleteUserByParamsIdController = async (req, res, next) => {
       ...user.toObject(),
       deletedCount: 1,
     };
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
@@ -388,6 +396,7 @@ const updateUserController = async (req, res, next) => {
     res.status(200); // OK
     res.locals.message = "User updated successfully!";
     res.locals.data = resData;
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
@@ -433,6 +442,7 @@ const updateUserSpecificFieldController = async (req, res, next) => {
     res.status(200); // OK
     res.locals.message = "User updated successfully!";
     res.locals.data = resData;
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
@@ -478,6 +488,7 @@ const blockUserByParamsIdController = async (req, res, next) => {
     res.status(200); // OK
     res.locals.message = "User has been successfully blocked!";
     res.locals.data = resData;
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware
@@ -523,6 +534,7 @@ const unblockUserByParamsIdController = async (req, res, next) => {
     res.status(200); // OK
     res.locals.message = "User has been successfully unblocked!";
     res.locals.data = resData;
+    res.locals.headersSend = true;
     next(); // Pass to responseHandler
   } catch (err) {
     next(err); // Pass error to the middleware

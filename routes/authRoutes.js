@@ -53,7 +53,7 @@ router.patch(
 //   next(); // Pass to the next middleware (e.g., `notFound`)
 // });
 router.all("*", (req, res, next) => {
-  if (res.headersSent) {
+  if (!res.locals.headersSend) {
     res.status(404);
     res.locals.isNotFound = true;
   }
