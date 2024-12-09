@@ -220,13 +220,21 @@ const refreshTokenController = async (req, res, next) => {
 
 //? Logout User
 
-const logoutUserController = (req, res, next) => {
+const logoutUserController = async (req, res, next) => {
   try {
     // Clear cookie token
     const cookie = req.cookies;
     if (!cookie.refreshToken) {
       res.status(401); // Unauthorized
       throw new Error("No refresh token found.");
+    }
+    const refreshToken = cookie.refreshToken;
+    const user = await User.findOne({ refreshToken: refreshToken });
+    if (!user) {
+      res.status(401); // Unauthorized
+      res.clearCookie("token");
+      res.clearCookie("refreshToken");
+      throw new Error("Invalid refresh token.");
     }
     res.clearCookie("token"); // Clear token from the cookie
     res.clearCookie("refreshToken"); // Clear refresh token from the cookie
