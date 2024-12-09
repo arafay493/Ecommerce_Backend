@@ -218,6 +218,28 @@ const refreshTokenController = async (req, res, next) => {
   }
 };
 
+//? Logout User
+
+const logoutUserController = (req, res, next) => {
+  try {
+    // Clear cookie token
+    const cookie = req.cookies;
+    if (!cookie.refreshToken) {
+      res.status(401); // Unauthorized
+      throw new Error("No refresh token found.");
+    }
+    res.clearCookie("token"); // Clear token from the cookie
+    res.clearCookie("refreshToken"); // Clear refresh token from the cookie
+    res.status(200); // OK
+    res.locals.message = "User logged out successfully!";
+    res.locals.data = null;
+    res.locals.headersSend = true;
+    next();
+  } catch (error) {
+    next(error); // Pass error to the middleware
+  }
+};
+
 //? Get All Users List
 const getAllUsersController = async (req, res, next) => {
   try {
@@ -554,4 +576,5 @@ module.exports = {
   updateUserSpecificFieldController,
   blockUserByParamsIdController,
   unblockUserByParamsIdController,
+  logoutUserController,
 };

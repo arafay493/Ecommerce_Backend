@@ -1,6 +1,7 @@
 const {
   createUserController,
   loginUserController,
+  logoutUserController,
   getAllUsersController,
   getUserByIdController,
   deleteUserController,
@@ -18,6 +19,8 @@ const router = require("express").Router();
 
 router.post("/register", createUserController);
 router.post("/login", loginUserController);
+router.post("/login", loginUserController);
+router.post("/logout", logoutUserController);
 router.get("/refresh", refreshTokenController);
 router.get("/users", getAllUsersController);
 router.get("/singleUser", authMiddleware, getUserByIdController);
