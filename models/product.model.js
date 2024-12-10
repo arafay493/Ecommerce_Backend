@@ -67,7 +67,7 @@ var productSchema = new mongoose.Schema(
       // default: "#000000",
     },
     rating: {
-      Star: Number,
+      type: Number,
       postedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
