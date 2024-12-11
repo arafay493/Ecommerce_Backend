@@ -1,10 +1,11 @@
 const express = require("express");
 const db = require("./config/dbConnect");
 const authRouter = require("./routes/authRoutes");
+const productRouter = require("./routes/productRoutes");
+const notFoundRouter = require("./routes/notFoundRoutes");
 const { errorHandler, notFound } = require("./middlewares/errorHandler");
 const responseHandler = require("./middlewares/responseHandler");
 const cookieParser = require("cookie-parser");
-const productRouter = require("./routes/productRoutes");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use("/api/auth", authRouter); // Prefixed auth routes
 app.use("/api/product", productRouter);
 app.use(authRouter);
+app.use(notFoundRouter);
 
 // Custom middlewares
 app.use(responseHandler);
