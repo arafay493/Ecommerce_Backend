@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const Product = require("../models/product.model");
+const { validateMongoDbId } = require("../utils/validateMongodbId");
 
 // Create and Save a new Product
 const createProductController = async (req, res, next) => {
@@ -53,15 +54,11 @@ const getProductController = async (req, res, next) => {
   try {
     // Validate ID (using path parameter or query parameter)
     const { id } = req.params || req.query;
-    console.log(id);
     if (!id) {
       res.status(400);
       throw new Error("Product ID must be provided.");
     }
-    if (!mongoose.isValidObjectId(id)) {
-      res.status(400);
-      throw new Error("Invalid Product ID.");
-    }
+    validateMongoDbId(id, res);
 
     // Find product by ID
     const product = await Product.findById(id);
