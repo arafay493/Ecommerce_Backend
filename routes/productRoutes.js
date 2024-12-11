@@ -1,9 +1,11 @@
 const {
   createProductController,
+  getProductController,
 } = require("../controllers/product.controller");
 
 const router = require("express").Router();
 router.post("/create", createProductController);
+router.get("/:id", getProductController);
 
 // Fallback for unmatched routes in this router
 router.all("*", (req, res, next) => {

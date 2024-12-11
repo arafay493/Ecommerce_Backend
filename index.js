@@ -5,17 +5,27 @@ const { errorHandler, notFound } = require("./middlewares/errorHandler");
 const responseHandler = require("./middlewares/responseHandler");
 const cookieParser = require("cookie-parser");
 const productRouter = require("./routes/productRoutes");
-const app = express();
+const cors = require("cors");
 require("dotenv").config();
+
+const app = express();
 const port = process.env.PORT || 8000;
 
+// Connect to the database
 db();
+
+// Middleware
+app.use(cors()); // Enable Cross-Origin Resource Sharing
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(authRouter);
-app.use("/api/product", productRouter);
 
+// Routes
+// app.use("/api/auth", authRouter); // Prefixed auth routes
+app.use("/api/product", productRouter);
+app.use(authRouter);
+
+// Custom middlewares
 app.use(responseHandler);
 app.use(notFound);
 app.use(errorHandler);

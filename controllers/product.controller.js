@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Product = require("../models/product.model");
 
 // Create and Save a new Product
@@ -47,4 +48,36 @@ const createProductController = async (req, res, next) => {
   }
 };
 
-module.exports = { createProductController };
+//? Get product Controller
+const getProductController = async (req, res, next) => {
+  try {
+    // Validate ID (using path parameter or query parameter)
+    const { id } = req.params || req.query;
+    console.log(id);
+    if (!id) {
+      res.status(400);
+      throw new Error("Product ID must be provided.");
+    }
+    if (!mongoose.isValidObjectId(id)) {
+      res.status(400);
+      throw new Error("Invalid Product ID.");
+    }
+
+    // Find product by ID
+    const product = await Product.findById(id);
+    // const product = await Product.findOne({ _id: id });
+    if (!product) {
+      res.status(404);
+      throw new Error("Product not found.");
+    }
+    res.status(200);
+    res.locals.message = "Product retrieved successfully";
+    res.locals.data = product;
+    res.locals.headersSend = true;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createProductController, getProductController };
