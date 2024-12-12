@@ -67,7 +67,8 @@ const getAllProductsController = async (req, res, next) => {
 const getAllProductsWithPaginationController = async (req, res, next) => {
   try {
     // Pagination
-    const { page = 1, limit = 10 } = req.query;
+    // const { page = 1, limit = 10 } = req.query;
+    const { page, limit } = req.query;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const total = await Product.countDocuments();
@@ -81,6 +82,7 @@ const getAllProductsWithPaginationController = async (req, res, next) => {
       products,
       currentPage: page,
       totalPages: Math.ceil(total / limit),
+      shownProducts: products.length,
       totalProducts: total,
     };
     res.locals.headersSend = true;

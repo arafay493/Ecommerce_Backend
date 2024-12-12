@@ -9,6 +9,7 @@ const {
 const router = require("express").Router();
 router.post("/create", createProductController);
 router.get("/getAll", getAllProductsController);
+router.get("/get", getAllProductsWithPaginationController);
 router.get("/getSingleProduct", getProductController);
 // router.get("/:id", getSingleProductWithParamsIdController);
 
