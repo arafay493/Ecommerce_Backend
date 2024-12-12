@@ -49,16 +49,64 @@ const createProductController = async (req, res, next) => {
   }
 };
 
-//? Get product Controller
+//Get all products without pagination
+const getAllProductsController = async (req, res, next) => {
+  try {
+    const products = await Product.find();
+    // res.status(200).json({
+    //   success: true,
+    //   message: "Products list fetched successfully!",
+    //   data: products,
+    // });
+    // console.log(products);
+    res.status(200);
+    res.locals.message = "Products list fetched successfully!";
+    res.locals.data = products;
+    res.locals.headersSend = true;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get All Products with Paginations
+const getAllProductsWithPaginationController = async (req, res, next) => {
+  try {
+    // Pagination
+    const { page = 1, limit = 10 } = req.query;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await Product.countDocuments();
+
+    // Find products
+    const products = await Product.find().skip(startIndex).limit(endIndex);
+
+    res.status(200);
+    res.locals.message = "Products list fetched successfully!";
+    res.locals.data = {
+      products,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalProducts: total,
+    };
+    res.locals.headersSend = true;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+//? Get Single product Controller
 const getProductController = async (req, res, next) => {
   try {
     // Validate ID (using path parameter or query parameter)
-    const { id } = req.params || req.query;
+    const { id } = req.query;
+    console.log(id);
     if (!id) {
       res.status(400);
       throw new Error("Product ID must be provided.");
     }
-    validateMongoDbId(id, res);
+    // validateMongoDbId(id, res);
 
     // Find product by ID
     const product = await Product.findById(id);
@@ -77,4 +125,39 @@ const getProductController = async (req, res, next) => {
   }
 };
 
-module.exports = { createProductController, getProductController };
+//? Get Single product Controller with Params Id
+const getSingleProductWithParamsIdController = async (req, res, next) => {
+  try {
+    // Validate ID (using path parameter or query parameter)
+    const { id } = req.params;
+    console.log(id);
+    if (!id) {
+      res.status(400);
+      throw new Error("Product ID must be provided.");
+    }
+    // validateMongoDbId(id, res);
+
+    // Find product by ID
+    const product = await Product.findById(id);
+    // const product = await Product.findOne({ _id: id });
+    if (!product) {
+      res.status(404);
+      throw new Error("Product not found.");
+    }
+    res.status(200);
+    res.locals.message = "Product retrieved successfully";
+    res.locals.data = product;
+    res.locals.headersSend = true;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createProductController,
+  getAllProductsController,
+  getAllProductsWithPaginationController,
+  getProductController,
+  getSingleProductWithParamsIdController,
+};
