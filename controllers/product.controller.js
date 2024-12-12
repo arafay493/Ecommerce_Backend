@@ -2,7 +2,7 @@ const { default: mongoose } = require("mongoose");
 const Product = require("../models/product.model");
 const { validateMongoDbId } = require("../utils/validateMongodbId");
 
-// Create and Save a new Product
+//? Create and Save a new Product
 const createProductController = async (req, res, next) => {
   try {
     // Validate request
@@ -49,16 +49,10 @@ const createProductController = async (req, res, next) => {
   }
 };
 
-//Get all products without pagination
+//? Get all products without pagination
 const getAllProductsController = async (req, res, next) => {
   try {
     const products = await Product.find();
-    // res.status(200).json({
-    //   success: true,
-    //   message: "Products list fetched successfully!",
-    //   data: products,
-    // });
-    // console.log(products);
     res.status(200);
     res.locals.message = "Products list fetched successfully!";
     res.locals.data = products;
@@ -69,7 +63,7 @@ const getAllProductsController = async (req, res, next) => {
   }
 };
 
-// Get All Products with Paginations
+//? Get All Products with Paginations
 const getAllProductsWithPaginationController = async (req, res, next) => {
   try {
     // Pagination
@@ -99,14 +93,12 @@ const getAllProductsWithPaginationController = async (req, res, next) => {
 //? Get Single product Controller
 const getProductController = async (req, res, next) => {
   try {
-    // Validate ID (using path parameter or query parameter)
     const { id } = req.query;
-    console.log(id);
     if (!id) {
       res.status(400);
       throw new Error("Product ID must be provided.");
     }
-    // validateMongoDbId(id, res);
+    validateMongoDbId(id, res);
 
     // Find product by ID
     const product = await Product.findById(id);

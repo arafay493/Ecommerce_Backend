@@ -7,7 +7,7 @@ const validateMongoDbId = (id, res) => {
   const isValid = mongoose.Types.ObjectId.isValid(id);
   if (!isValid) {
     res.status(400); // Bad Request
-    throw new Error("Invalid User ID.");
+    throw new Error("Invalid ID.");
   }
 };
 module.exports = {validateMongoDbId};
