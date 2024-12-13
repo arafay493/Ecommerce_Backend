@@ -8,7 +8,8 @@
     "express": "^4.21.1",
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.8.2"
+    "mongoose": "^8.8.2",
+    "morgan": "^1.10.0"
   },
   "name": "ecommerce-backend",
   "version": "1.0.0",

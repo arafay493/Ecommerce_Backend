@@ -7,8 +7,11 @@ const { errorHandler, notFound } = require("./middlewares/errorHandler");
 const responseHandler = require("./middlewares/responseHandler");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const morgan = require("morgan");
 require("dotenv").config();
-
+// const logStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
+//   flags: 'a', // Append mode
+// });
 const app = express();
 const port = process.env.PORT || 8000;
 
@@ -17,6 +20,7 @@ db();
 
 // Middleware
 app.use(cors()); // Enable Cross-Origin Resource Sharing
+app.use(morgan("tiny")); // For Logging the request
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
