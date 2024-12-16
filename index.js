@@ -9,6 +9,12 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 require("dotenv").config();
+
+// //todo: for learning purpose only
+// const { toLowerCaseSlug , toLowerCaseLodash } = require("./utils/textToSlugify");
+// toLowerCaseSlug("THIS IS CAPITAL LETTER CAPITAL LETTER")
+// toLowerCaseLodash("THIS IS LODASH")
+// //todo: for learning purpose only end 
 // const logStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
 //   flags: 'a', // Append mode
 // });
@@ -20,7 +26,7 @@ db();
 
 // Middleware
 app.use(cors()); // Enable Cross-Origin Resource Sharing
-app.use(morgan("tiny")); // For Logging the request
+app.use(morgan("dev")); // For Logging the request
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
