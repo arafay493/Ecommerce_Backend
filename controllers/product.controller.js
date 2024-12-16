@@ -148,10 +148,103 @@ const getSingleProductWithParamsIdController = async (req, res, next) => {
   }
 };
 
+//? Update Product Controller
+// const updateProductController = async (req, res, next) => {
+//   try {
+//     const { id } = req.query;
+//     if (!id) {
+//       res.status(400);
+//       throw new Error("Product ID must be provided.");
+//     }
+//     validateMongoDbId(id, res);
+//     // Find product by ID
+//     const product = await Product.findById(id);
+//     // const product = await Product.findOne({ _id: id });
+//     if (!product) {
+//       res.status(404);
+//       throw new Error("Product not found.");
+//     }
+//     // Update product fields
+//     product.title = req.body.title || product.title;
+//     product.slug = req.body.slug || product.slug;
+//     product.price = req.body.price || product.price;
+//     product.quantity = req.body.quantity || product.quantity;
+//     product.category = req.body.category || product.category;
+//     product.description = req.body.description || product.description;
+//     // Save updated product
+//     const updatedProduct = await product.save();
+//     res.status(200);
+//     res.locals.message = "Product updated successfully";
+//     res.locals.data = updatedProduct;
+//     res.locals.headersSend = true;
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+//? Update Product Controller
+const updateProductController = async (req, res, next) => {
+  try {
+    const { id } = req.body;
+    if (!id) {
+      res.status(400);
+      throw new Error("Product ID must be provided.");
+    }
+    validateMongoDbId(id, res);
+    // Find product by ID
+    // const product = await Product.findById(id);
+    const prevProduct = await Product.findById(id, {
+      updatedAt: 0,
+      createdAt: 0,
+    });
+    if (!prevProduct) {
+      res.status(404);
+      throw new Error("Product not found.");
+    }
+    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+      new: true,
+      projection: { updatedAt: 0, createdAt: 0 },
+    });
+    console.log(prevProduct, updatedProduct);
+    // Convert to plain objects and compare
+    if (
+      JSON.stringify(prevProduct.toObject()) ===
+      JSON.stringify(updatedProduct.toObject())
+    ) {
+      res.status(409); // Conflict
+      throw new Error("No changes made to this product.");
+    }
+    // const product = await Product.findOne({ _id: id });
+    if (!updatedProduct) {
+      res.status(404);
+      throw new Error("Product not found.");
+    }
+    //     // Update product fields
+    //     product.title = req.body.title || product.title;
+    //     product.slug = req.body.slug || product.slug;
+    //     product.price = req.body.price || product.price;
+    //     product.quantity = req.body.quantity || product.quantity;
+    //     product.category = req.body.category || product.category;
+    //     product.description = req.body.description || product.description;
+    // Save updated product
+    // const updatedProduct = await product.save();
+    res.status(200);
+    res.locals.message = "Product updated successfully";
+    res.locals.data = updatedProduct;
+    // res.locals.data = product;
+    res.locals.headersSend = true;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createProductController,
   getAllProductsController,
   getAllProductsWithPaginationController,
   getProductController,
   getSingleProductWithParamsIdController,
+  updateProductController,
 };
