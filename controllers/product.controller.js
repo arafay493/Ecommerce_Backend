@@ -206,7 +206,6 @@ const updateProductController = async (req, res, next) => {
       new: true,
       projection: { updatedAt: 0, createdAt: 0 },
     });
-    console.log(prevProduct, updatedProduct);
     // Convert to plain objects and compare
     if (
       JSON.stringify(prevProduct.toObject()) ===
