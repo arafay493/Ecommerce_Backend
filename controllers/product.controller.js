@@ -239,6 +239,45 @@ const updateProductController = async (req, res, next) => {
   }
 };
 
+//? Delete Product Controller
+
+const deleteProductController = async (req, res, next) => {
+  try {
+    const { id } = req.body;
+    if (!id) {
+      res.status(400);
+      throw new Error("Product ID must be provided.");
+    }
+    validateMongoDbId(id, res);
+    //todo: Method 1 : Find product by ID
+    // const product = await Product.findById(id);
+    // const product = await Product.findOne({ _id: id });
+    // if (!product) {
+    //   res.status(404);
+    //   throw new Error("Product not found.");
+    // }
+    // Delete product
+    // await product.deleteOne({ _id: id });
+    //todo: Method 2 : Find product by ID And Delete product
+    const product = await Product.findById(id);
+    if (!product) {
+      res.status(404);
+      throw new Error("Product not found.");
+    }
+    const response = await Product.findByIdAndDelete(id);
+    res.status(200);
+    res.locals.message = "Product deleted successfully";
+    // res.locals.data = product;
+    res.locals.data = response;
+    res.locals.headersSend = true;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+//? Get All Products with infinite scroll or see more button
+
 module.exports = {
   createProductController,
   getAllProductsController,
@@ -246,4 +285,5 @@ module.exports = {
   getProductController,
   getSingleProductWithParamsIdController,
   updateProductController,
+  deleteProductController,
 };

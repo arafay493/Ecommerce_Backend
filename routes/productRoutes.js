@@ -4,7 +4,8 @@ const {
   getAllProductsWithPaginationController,
   getProductController,
   getSingleProductWithParamsIdController,
-  updateProductController
+  updateProductController,
+  deleteProductController,
 } = require("../controllers/product.controller");
 
 const router = require("express").Router();
@@ -13,6 +14,7 @@ router.get("/getAll", getAllProductsController);
 router.get("/get", getAllProductsWithPaginationController);
 router.get("/getSingleProduct", getProductController);
 router.put("/update", updateProductController);
+router.delete("/delete", deleteProductController);
 // router.get("/:id", getSingleProductWithParamsIdController);
 
 // Fallback for unmatched routes in this router
