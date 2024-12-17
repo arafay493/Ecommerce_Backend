@@ -240,7 +240,6 @@ const updateProductController = async (req, res, next) => {
 };
 
 //? Delete Product Controller
-
 const deleteProductController = async (req, res, next) => {
   try {
     const { id } = req.body;

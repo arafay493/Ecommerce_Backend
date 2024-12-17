@@ -7,14 +7,15 @@ const {
   updateProductController,
   deleteProductController,
 } = require("../controllers/product.controller");
+const { isAdmin, authMiddleware } = require("../middlewares/authMiddleware");
 
 const router = require("express").Router();
-router.post("/create", createProductController);
+router.post("/create", authMiddleware, isAdmin, createProductController);
 router.get("/getAll", getAllProductsController);
 router.get("/get", getAllProductsWithPaginationController);
 router.get("/getSingleProduct", getProductController);
-router.put("/update", updateProductController);
-router.delete("/delete", deleteProductController);
+router.put("/update", authMiddleware, isAdmin, updateProductController);
+router.delete("/delete", authMiddleware, isAdmin, deleteProductController);
 // router.get("/:id", getSingleProductWithParamsIdController);
 
 // Fallback for unmatched routes in this router
