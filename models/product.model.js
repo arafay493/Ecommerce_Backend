@@ -44,6 +44,7 @@ var productSchema = new mongoose.Schema(
       required: true,
       min: 0,
       default: 0,
+      select: false,
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
