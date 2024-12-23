@@ -63,6 +63,20 @@ const getAllProductsController = async (req, res, next) => {
   }
 };
 
+//? Get all products query parameters
+const getAllProductsOfQueryParamertersController = async (req, res, next) => {
+  try {
+    const products = await Product.find(req.query);
+    res.status(200);
+    res.locals.message = "Products list fetched successfully!";
+    res.locals.data = products;
+    res.locals.headersSend = true;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 //? Get All Products with Paginations
 const getAllProductsWithPaginationController = async (req, res, next) => {
   try {
@@ -285,4 +299,5 @@ module.exports = {
   getSingleProductWithParamsIdController,
   updateProductController,
   deleteProductController,
+  getAllProductsOfQueryParamertersController
 };

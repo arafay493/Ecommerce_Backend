@@ -6,12 +6,14 @@ const {
   getSingleProductWithParamsIdController,
   updateProductController,
   deleteProductController,
+  getAllProductsOfQueryParamertersController
 } = require("../controllers/product.controller");
 const { isAdmin, authMiddleware } = require("../middlewares/authMiddleware");
 
 const router = require("express").Router();
 router.post("/create", authMiddleware, isAdmin, createProductController);
 router.get("/getAll", getAllProductsController);
+router.get("/getAllProducts", getAllProductsOfQueryParamertersController);
 router.get("/get", getAllProductsWithPaginationController);
 router.get("/getSingleProduct", getProductController);
 router.put("/update", authMiddleware, isAdmin, updateProductController);
