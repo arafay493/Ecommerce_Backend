@@ -80,6 +80,34 @@ const getAllProductsController = async (req, res, next) => {
 //? Get all products query parameters: Method 2
 const getAllProductsOfQueryParamertersController = async (req, res, next) => {
   try {
+    //todo: Method 1
+    // const initialQuery = {...req.query}
+    // // List of keys to remove
+    // const keysToRemove = ["page", "sort", "limit", "fields"];
+    // // Create a filtered query by removing unwanted keys
+    // const filteredQuery = Object.keys(initialQuery)
+    //   .filter((key) => !keysToRemove.includes(key))
+    //   .reduce((obj, key) => {
+    //     obj[key] = initialQuery[key];
+    //     return obj;
+    //   }, {});
+    // console.log(filteredQuery);
+    
+    //todo: Method 2
+    // const initialQuery = {...req.query}
+    // // List of keys to remove
+    // const keysToRemove = ["page", "sort", "limit", "fields"];
+    
+    // // Remove unwanted keys
+    // keysToRemove.forEach((key) => {
+    //   delete initialQuery[key];
+    // });
+    // console.log(initialQuery);
+
+    //todo: Method 3
+    const { page, sort, limit, fields, ...filteredQuery } = req.query;
+    console.log(filteredQuery);
+
     const products = await Product.where("brand").equals(req.query.brand);
     res.status(200);
     res.locals.message = "Products list fetched successfully!";
@@ -313,5 +341,5 @@ module.exports = {
   getSingleProductWithParamsIdController,
   updateProductController,
   deleteProductController,
-  getAllProductsOfQueryParamertersController
+  getAllProductsOfQueryParamertersController,
 };
