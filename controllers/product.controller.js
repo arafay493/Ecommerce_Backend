@@ -63,10 +63,24 @@ const getAllProductsController = async (req, res, next) => {
   }
 };
 
-//? Get all products query parameters
+//? Get all products query parameters: Method 1
+// const getAllProductsOfQueryParamertersController = async (req, res, next) => {
+//   try {
+//     const products = await Product.find(req.query);
+//     res.status(200);
+//     res.locals.message = "Products list fetched successfully!";
+//     res.locals.data = products;
+//     res.locals.headersSend = true;
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+//? Get all products query parameters: Method 2
 const getAllProductsOfQueryParamertersController = async (req, res, next) => {
   try {
-    const products = await Product.find(req.query);
+    const products = await Product.where("brand").equals(req.query.brand);
     res.status(200);
     res.locals.message = "Products list fetched successfully!";
     res.locals.data = products;
